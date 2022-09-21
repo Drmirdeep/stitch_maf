@@ -21,5 +21,5 @@ work. If not, see [http://creativecommons.org/licenses/by-nc-sa/4.0/](https://cr
 git clone https://github.com/Drmirdeep/stitch_maf.git
 ```
 
-For an example use case have a look at [build_genome_maf_plus_index.txt](build_genome_maf_plus_index.txt)
+For an example use case have a look at [build_genome_maf_plus_index.txt](build_genome_maf_plus_index.txt) and [sample_run.sh](sample_run.sh)
 
