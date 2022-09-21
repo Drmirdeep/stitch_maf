@@ -1,0 +1,79 @@
+### This tutorial describes how to generate genome wide stitched maf files
+### and the corresponding index files which indicate gaps and indels
+### at particular genome positions.
+
+
+This is examplified on the elegans genome
+
+I. Obtaining necessary files
+===================================================================================
+1. Download maf blocks from the UCSC download sections
+
+http://hgdownload.soe.ucsc.edu/downloads.html
+
+2. Click on  c_elegans
+3. Under Multiple Alignments click on  'Multiple alignments of 5 worms with C. elegans'
+4. Download all chr*.maf.gz files to a directory of your choice
+5. gunzip these files 
+
+6. Go back to the UCSC download page and click on Annotation database
+7. Download the chrominfo file to the same directory as before.
+8. gunzip this file
+
+9. Download chromosome fasta files to the same directory and format them so that the first line is the id and the second line is the whole chromosome sequence.
+9.1 Go back to the UCSC download page and click on Data set by chromosome and download all chromosome.gz files and gunzip them 
+9.2 On each chromosome file run the perl script make_fasta_file_from_fa_similar.pl in.fa > out.fa.ol
+
+
+II. Preprocessing the maf files
+==================================================================================
+1. run the script split_maf.pl on all maf files 
+e.g. 
+
+perl split_maf.pl   chrI.maf     ce6       10                chrI              chrominfo            path_to_out.fa.ol_files
+                    input_maf    species   number_of         chromosome        file with length of chromosomes
+                                           split files
+ 
+## note the higher the number of split files the faster the stitching will be completed if run in parallel
+
+III. stitching maf files
+==================================================================================
+1. stitch the maf files
+
+for x in {1..10} ;do 
+interval_maf_to_merged_fasta.py -c 1 -s 2 -e 3 -S 6 -d ce6 -p ce6,caeRem3,cb3,caePb2,caeJap1,priPac1 -i chrI.maf.${x}.bed -m chrI.maf.${x} -t user -o chrI.maf.${x}.stitched
+done
+
+The script 'interval_maf_to_merged_fasta.py' is from the phast tools contained in the galaxy pipeline and needs to be runnable on the machines you are going to stitch the maf files.
+If this is not the case it will fail completely.
+The bed files supplied to the script are generated automatically by the split_maf.pl script.
+
+The script interval_maf_to_merged_fasta.py imports the following python packages so these must be installed as well
+#From Dan Blankenberg
+#from galaxy import eggs
+import maf_utilities
+import pkg_resources; pkg_resources.require( "bx-python" )
+from bx.cookbook import doc_optparse
+import bx.intervals.io
+
+Please ask someone who is pyhton friendly if you need help with setting up the environment
+
+2. generate maf file for the boundary regions of your stitched maf files. This is necessary since the boundary regions are sometimes not properly stitched and contain only gaps. 
+
+3. fuse the single stitched maf blocks to each other in order to get a chromosome wide maf file. The current script needs huge amounts of memory so run it on a bignode if possible or
+rewrite the script. It also reorders the species to be in accordance with the ucsc species order shown in the browser as well as inserts DNA sequence for the reference species 
+for positions were only gaps are shown in the stitched maf files. This is mostly at the telomeres.
+
+for i in I II III IV V X;do echo $i;cd chr$i;../finalize_stitch.sh ../ce6_species ../chrominfo  chr$i 10 ce6;cd ..;done
+
+IV. Index creation for gaps etc 
+Go to the directory of your download maf blocks and run the following 2 commands
+
+for i in *.maf;do perl make_maf_index_on_blocks_2.pl $i ce6 > $i.index;done
+for i in *.index;do sort -nk 2 > $i.sorted;done
+
+The stitched maf files as well as the index files (sorted) are now suitable as input for micPDP
+ 
+## now we build an index for the index to speedup the lookup time for particular positions ## if these files are missing than micPDP may be running a bit slower than necessary
+for i in `cat ../chromosomes`;do build_index_on_index.pl $i.maf.index.sorted > $i.maf.index.sorted.i2;done
+
