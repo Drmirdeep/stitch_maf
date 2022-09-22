@@ -32,7 +32,9 @@ wget -O tmp.py https://raw.githubusercontent.com/galaxyproject/galaxy/dev/tools/
 ## modify one line so it directly imports from file ## no need to download whole galaxy tools 
 perl -ane 'if(/import maf_utilities/){print "import maf_utilities\n";}else{print;}' tmp.py > interval_maf_to_merged_fasta.py
 
-wget https://raw.githubusercontent.com/galaxyproject/galaxy/dev/lib/galaxy/datatypes/util/maf_utilities.py
+## modify maf_utilities to open index file with wb
+wget https://raw.githubusercontent.com/galaxyproject/galaxy/dev/lib/galaxy/datatypes/util/maf_utilities.tmp
+perl -ane 'if(/(^.+tempfile.NamedTemporaryFile\(mode="w)(".+$)/){print "$1b$2"}else{print;}' maf_utilities.tmp > maf_utilities.py
 
 export PYTHONPATH=$PYTHONPATH:$(pwd _LP)
 
@@ -40,15 +42,15 @@ export PYTHONPATH=$PYTHONPATH:$(pwd _LP)
 
 cd chrI
 for x in {1..4} ;do
-python2 ../interval_maf_to_merged_fasta.py -c 1 -s 2 -e 3 -S 6 -d $ref -p $specs  -i chrI.maf.${x}.bed -m chrI.maf.${x} -t user -o chrI.maf.${x}.stitched
+python ../interval_maf_to_merged_fasta.py -c 1 -s 2 -e 3 -S 6 -d $ref -p $specs  -i chrI.maf.${x}.bed -m chrI.maf.${x} -t user -o chrI.maf.${x}.stitched
 done
 
 ## make bridge maf etc
 cat *bridge* > chrI.maf.bed_bridges
-python2 ../interval_maf_to_merged_fasta.py -c 1 -s 2 -e 3 -S 6 -d $ref -p $specs  -i chrI.maf.bed_bridges -m ../chrI.maf -t user -o chrI.maf.stitched.boundary
+python ../interval_maf_to_merged_fasta.py -c 1 -s 2 -e 3 -S 6 -d $ref -p $specs  -i chrI.maf.bed_bridges -m ../chrI.maf -t user -o chrI.maf.stitched.boundary
 
 ## now make full maf file
-$S/finalize_stitch.sh ../species_ce10_reordered ../chromInfo.txt  chrI 4 ce10 $HOME/micpdp_elegans/
+$S/finalize_stitch.sh ../species_ce10 ../chromInfo.txt  chrI 4 ce10 ../
 
 cd ..
 ## build index now
