@@ -32,8 +32,9 @@ wget -O tmp.py https://raw.githubusercontent.com/galaxyproject/galaxy/dev/tools/
 ## modify one line so it directly imports from file ## no need to download whole galaxy tools 
 perl -ane 'if(/import maf_utilities/){print "import maf_utilities\n";}else{print;}' tmp.py > interval_maf_to_merged_fasta.py
 
+
 ## modify maf_utilities to open index file with wb
-wget https://raw.githubusercontent.com/galaxyproject/galaxy/dev/lib/galaxy/datatypes/util/maf_utilities.tmp
+wget -O maf_utilities.tmp  https://raw.githubusercontent.com/galaxyproject/galaxy/dev/lib/galaxy/datatypes/util/maf_utilities.py
 perl -ane 'if(/(^.+tempfile.NamedTemporaryFile\(mode="w)(".+$)/){print "$1b$2"}else{print;}' maf_utilities.tmp > maf_utilities.py
 
 export PYTHONPATH=$PYTHONPATH:$(pwd _LP)
