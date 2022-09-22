@@ -7,7 +7,7 @@ Bazzini et al, [Identification of small ORFs in vertebrates using ribosome footp
 
 Gernstein et al, [Integrative analysis of the Caenorhabditis elegans genome by the modENCODE project.](https://pubmed.ncbi.nlm.nih.gov/21177976/) Science 2010
 
-Mangone et al, [The landscape of C. elegans 3'UTRs.](https://pubmed.ncbi.nlm.nih.gov/20522740/) Science 2010]
+Mangone et al, [The landscape of C. elegans 3'UTRs.](https://pubmed.ncbi.nlm.nih.gov/20522740/) Science 2010
 
 ## Authorship and legal information
 The scripts, in the form provided in this archive, were implemented by Sebastian Mackowiak, being a PhD student at this time in the lab of Nikolaus Rajewsky at the [Max-Delbrueck-Center for Molecular Biology](https://www.mdc-berlin.de/1151037/en/research/research_teams/systems_biology_of_gene_regulatory_elements). The code is hereby released under a
