@@ -1,6 +1,6 @@
 #!/bin/bash
 
-S=$HOME/micpdp_package/build_index/
+S=$HOME/stitch_maf/
 
 echo I II III IV V M X|xargs -n1 -I{} wget http://hgdownload.soe.ucsc.edu/goldenPath/ce10/multiz7way/chr{}.maf.gz
 
