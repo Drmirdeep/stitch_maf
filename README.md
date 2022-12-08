@@ -1,4 +1,4 @@
-# Stitch multiple species alignemnts
+# Stitch multiple species alignments
 Scripts to build genome wide alignments and accompanying indices. Package has been used in
 
 Mackowiak at al, [Extensive identification and analysis of conserved small ORFs in animals.](https://pubmed.ncbi.nlm.nih.gov/26364619) Genome Biology 2015
